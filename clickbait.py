@@ -38,6 +38,10 @@ def create_labeled_data():
     return all_headlines
 
 
+def bait_features(headline):
+    features = {}
+
+
 if __name__ == '__main__':
     myheadlines = create_labeled_data()
     print(myheadlines[990:1010])
