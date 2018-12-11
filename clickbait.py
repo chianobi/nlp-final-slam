@@ -1,30 +1,29 @@
 """
-
 File to fill with fun clickbait analysis!
 Love, Lucino
-
 """
 
 from newsapi import NewsApiClient
 import nltk
 from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 import random
 
 def create_labeled_data():
-    news_api = NewsApiClient(api_key='063f02817dbb49528058d7372964f645')
+    news_api = NewsApiClient(api_key='99a7e430ec8f4cc1b2e6a6b77b65a5bc')
     buzzfeed_headlines = []
     reuters_headlines = []
     x = 1
     while x <= 10:
         b_headlines = news_api.get_everything(sources='buzzfeed',
-                                              from_param='2018-11-10',
+                                              from_param='2018-11-11',
                                               to='2018-12-09',
                                               language='en',
                                               sort_by='relevancy',
                                               page_size=100,
                                               page=x)['articles']
         r_headlines = news_api.get_everything(sources='reuters',
-                                              from_param='2018-11-10',
+                                              from_param='2018-11-11',
                                               to='2018-12-09',
                                               language='en',
                                               sort_by='relevancy',
@@ -51,14 +50,13 @@ def bait_features(headline):
 	featureset = {}
 	featureset['pcount'] = pcount(headline)
 	featureset['punctcount'] = punctcount(headline)
-	featureset['adjcount'] = adjcount(headline)
 	featureset['averagewordlength'] = averagewordlength(headline)
 	return featureset
 	
 	
 def pcount(headline):
-	pronouns = ["we","you","I","everyone"]
-	for w in headline:
+	pronouns = ["we","you","i","everyone","us","your","our"]
+	for w in word_tokenize(headline):
 		if w.lower() in pronouns:
 			return True
 	return False
@@ -66,28 +64,22 @@ def pcount(headline):
 def punctcount(headline):
 	count = 0
 	punct = [".","!","?"]
-	for w in headline.split():
+	for w in word_tokenize(headline):
 		if w in punct:
 			count += 1
-	return count
+	return count > 0
 	
-def adjcount(headline):
-	count = 0
-	for tag in pos_tag(headline):
-		if tag[1] == 'JJ':
-			count += 1
-	return count
-
 def averagewordlength(headline):
     charactercount = 0;
     wordcount = 0;
-    commonshortwords = ["the", "a", "for", "an", "of", "and", "so", "but", "with"]
-    for w in headline:
+    commonshortwords = ["the", "a", "for", "an", "of", "and", "so", "but", "with", ",",".",":",";"]
+    for w in word_tokenize(headline):
         if w.lower() not in commonshortwords:
             charactercount += len(w)
             wordcount += 1
-    return charactercount/wordcount
-
+    avg = charactercount/wordcount
+    return avg < 4
+	
 def train_classifier(training_set):
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     return classifier
@@ -101,3 +93,4 @@ if __name__ == '__main__':
     training_set, test_set = create_feature_sets(labeled_data)
     classifier = train_classifier(training_set)
     evaluate_classifier(classifier, test_set)
+    classifier.show_most_informative_features()
