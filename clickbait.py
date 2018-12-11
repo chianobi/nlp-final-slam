@@ -52,6 +52,7 @@ def bait_features(headline):
 	featureset['pcount'] = pcount(headline)
 	featureset['punctcount'] = punctcount(headline)
 	featureset['adjcount'] = adjcount(headline)
+	featureset['averagewordlength'] = averagewordlength(headline)
 	return featureset
 	
 	
@@ -76,7 +77,17 @@ def adjcount(headline):
 		if tag[1] == 'JJ':
 			count += 1
 	return count
-	
+
+def averagewordlength(headline):
+    charactercount = 0;
+    wordcount = 0;
+    commonshortwords = ["the", "a", "for", "an", "of", "and", "so", "but", "with"]
+    for w in headline:
+        if w.lower() not in commonshortwords:
+            charactercount += len(w)
+            wordcount += 1
+    return charactercount/wordcount
+
 def train_classifier(training_set):
     classifier = nltk.NaiveBayesClassifier.train(training_set)
     return classifier
