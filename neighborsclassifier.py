@@ -46,7 +46,7 @@ def create_training_y(headlines):
 def create_predictable_list(headline_string):
     predictor_as_object = Headline(headline_string, "none")
     predictable_values = []
-    predictable_values.append(create_training_x(create_x_vals(predictor_as_object)))
+    predictable_values.append(create_x_vals(predictor_as_object))
     return predictable_values
 
 
@@ -58,3 +58,4 @@ if __name__ == '__main__':
     neighbor_classifier = KNeighborsClassifier(n_neighbors=25)
     neighbor_classifier.fit(training_x, training_y)
     print(neighbor_classifier.score(training_x, training_y))
+    print(neighbor_classifier.predict(create_predictable_list("You can make up a headline and test it here.")))
