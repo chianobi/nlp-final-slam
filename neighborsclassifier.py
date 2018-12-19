@@ -5,7 +5,7 @@ import clickbaitoop
 from headline import Headline
 from sklearn.neighbors import KNeighborsClassifier
 
-#Creates a set of headline objects
+#Creates a set of headline objects to read
 def create_headlines():
     headline_tuples = pickle.load(open('headlines.p', 'rb'))
     headlines = [Headline(h[0], h[1]) for h in headline_tuples]
