@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 from headline import Headline
 
 common_bigrams = []
+common_words = []
 splitpoint = 2700
 
 """
@@ -26,6 +27,7 @@ def create_headlines():
 
 def create_feature_sets(headlines):
     common_bigrams.extend(get_bigrams(headlines))
+    common_words.extend(get_common_words(headlines))
     feature_sets = [(bait_features(headline), headline.label) for headline in headlines]
     train_set, test_set = feature_sets[:splitpoint], feature_sets[splitpoint:]
     return train_set, test_set
@@ -42,6 +44,16 @@ def get_bigrams(headlines):
     common_bigrams = [x[0] for x in most_common]
     return common_bigrams
 
+def get_common_words(headlines):
+     #get list of all tokens in corpus
+     corpus_tokens = []
+     for h in headlines:
+         corpus_tokens.extend(h.tokens_lower)
+     #return most common words
+     fdist = nltk.FreqDist(corpus_tokens)
+     common_words = fdist.most_common(50)
+     return common_words
+
 
 def bait_features(headline):
     featureset = {}
@@ -56,6 +68,7 @@ def bait_features(headline):
     featureset['bigrams'] = bigrams(headline)
     featureset['function_words'] = function_words(headline)
     featureset['flag_words'] = flag_words(headline)
+    featureset['rare_words'] = rare_words(headline)
     return featureset
 
 # Checks for the use of first and second-person pronouns in article headline; returns true if any found.
@@ -69,7 +82,7 @@ def procount(headline):
 
 # Checks end-of-sentence punctuation count in headline; returns true if count is greater than 0.
 def punct(headline):
-    punct = [".", "!", "?", ","]
+    punct = [".", "!", "?"]
     found = False
     for w in headline.tokens:
         if w in punct:
@@ -145,30 +158,19 @@ def function_words(headline):
     return True if ((len(fun_words)/headline.num_tokens) == .5) else False
 
 def flag_words(headline):
-    flags = ['this', 'will', 'believe', 'surprise']
+    flags = ['this', 'these', 'will', 'll', 'believe', 'surprise']
     found = False
     for word in headline.tokens_lower:
         if word in flags:
             found = True
     return found
 
-# def get_common_words(headlines):
-#     #get list of all tokens in corpus
-#     corpus_tokens = []
-#     for h in headlines:
-#         corpus_tokens.extend(h.tokens_lower)
-#     #return most common words
-#     fdist = nltk.FreqDist(corpus_tokens)
-#     half = int(len(fdist)/2)
-#     common_words = fdist.most_common(half)
-#     return common_words
-#
-# def rare_words(headline):
-#     rare = 0
-#     for word in headline.tokens_lower:
-#         if word not in common_words:
-#             rare += 1
-#     return rare
+def rare_words(headline):
+    rare = 0
+    for word in headline.tokens_lower:
+        if word not in common_words:
+            rare += 1
+    return rare > 17
 
 def train_classifier(training_set):
     classifier = nltk.NaiveBayesClassifier.train(training_set)
@@ -186,3 +188,9 @@ if __name__ == '__main__':
     classifier = train_classifier(training_set)
     evaluate_classifier(classifier, test_set)
     classifier.show_most_informative_features()
+
+
+    str = "Officials Say Trump Has Ordered Full Withdrawal of U.S. Troops From Syria"
+    hline = Headline(str, 'unknown')
+    fset = bait_features(hline)
+    print(classifier.classify(fset))
