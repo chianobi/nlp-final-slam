@@ -215,17 +215,12 @@ if __name__ == '__main__':
         print()
         print("Would you like to enter another headline? (y/n) ", end=" ")
         inp = input()
-        if (inp == 'y'):
+        if inp == 'y':
             arm = 'headline'
         else:
             arm = ''
 
-    if (arm == 'source'):
-        go = 'y'
-    else:
-        go = 'n'
-
-    while (go == 'y'):
+    while (arm == 'source'):
         print("Enter the name of a news source from sources.txt:", end=" ")
         usersource = input()
         print("Calculating...")
@@ -234,5 +229,9 @@ if __name__ == '__main__':
         print("This news source is approximately " + str(classify_headlines(newssource.headlines, classifier) * 100) + "% clickbait.")
         print()
         print("Would you like to try another news source? (y/n)", end=" ")
-        go = input()
+        inp = input()
+        if inp == 'y':
+            arm = 'source'
+        else:
+            arm = ''
         print('\n')
