@@ -1,4 +1,8 @@
 Lucino Chiafullo -
+Built Naive Bayes classifier/Contributed to feature functions
+Wrote data_collector
+Wrote logic for classify_headlines and Newscorpus class
+Wrote relevant parts of write up
 
 Arjuna Mahenthiran - 
 
