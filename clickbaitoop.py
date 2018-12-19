@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 from headline import Headline
 
 common_bigrams = []
+common_words = []
 splitpoint = 2700
 
 """
@@ -26,20 +27,32 @@ def create_headlines():
 
 def create_feature_sets(headlines):
     common_bigrams.extend(get_bigrams(headlines))
+    common_words.extend(get_common_words(headlines))
     feature_sets = [(bait_features(headline), headline.label) for headline in headlines]
-    print(len(feature_sets))
     train_set, test_set = feature_sets[:splitpoint], feature_sets[splitpoint:]
     return train_set, test_set
 
 
 #pulls out most frequent bigrams from the training set each time (they are almost always the same!)
 def get_bigrams(headlines):
-    clean_string = [" ".join(h.tokens) for h in headlines[:splitpoint] if h.label == 'bait']
-    bgrams = nltk.bigrams(clean_string)
-    fdist = nltk.FreqDist(bgrams)
+    all_bgrams = []
+    training = [h.tokens_lower for h in headlines[:splitpoint] if h.label == 'bait']
+    for h in training:
+        all_bgrams.extend(list(nltk.bigrams(h)))
+    fdist = nltk.FreqDist(all_bgrams)
     most_common = fdist.most_common(25)
     common_bigrams = [x[0] for x in most_common]
     return common_bigrams
+
+def get_common_words(headlines):
+     #get list of all tokens in corpus
+     corpus_tokens = []
+     for h in headlines:
+         corpus_tokens.extend(h.tokens_lower)
+     #return most common words
+     fdist = nltk.FreqDist(corpus_tokens)
+     common_words = fdist.most_common(50)
+     return common_words
 
 
 def bait_features(headline):
@@ -55,8 +68,8 @@ def bait_features(headline):
     featureset['bigrams'] = bigrams(headline)
     featureset['function_words'] = function_words(headline)
     featureset['flag_words'] = flag_words(headline)
+    featureset['rare_words'] = rare_words(headline)
     return featureset
-
 
 # Checks for the use of first and second-person pronouns in article headline; returns true if any found.
 def procount(headline):
@@ -69,7 +82,7 @@ def procount(headline):
 
 # Checks end-of-sentence punctuation count in headline; returns true if count is greater than 0.
 def punct(headline):
-    punct = [".", "!", "?", ","]
+    punct = [".", "!", "?"]
     found = False
     for w in headline.tokens:
         if w in punct:
@@ -131,7 +144,7 @@ def imperative(headline):
 # Checks all bigrams in the headline, and compares them against a list of most common clickbait bigrams. Returns
 # true if any match.
 def bigrams(headline):
-    bigrams = nltk.bigrams(headline.tokens)
+    bigrams = nltk.bigrams(headline.tokens_lower)
 
     for x in bigrams:
         if x in common_bigrams:
@@ -145,13 +158,19 @@ def function_words(headline):
     return True if ((len(fun_words)/headline.num_tokens) == .5) else False
 
 def flag_words(headline):
-    flags = ['this', 'will', 'believe', 'surprise']
+    flags = ['this', 'these', 'will', 'll', 'believe', 'surprise']
     found = False
     for word in headline.tokens_lower:
         if word in flags:
             found = True
     return found
 
+def rare_words(headline):
+    rare = 0
+    for word in headline.tokens_lower:
+        if word not in common_words:
+            rare += 1
+    return rare > 17
 
 def train_classifier(training_set):
     classifier = nltk.NaiveBayesClassifier.train(training_set)
@@ -163,7 +182,6 @@ def evaluate_classifier(classifier, test_set):
 
 
 if __name__ == '__main__':
-
 
     headlines = create_headlines()
     training_set, test_set = create_feature_sets(headlines)
