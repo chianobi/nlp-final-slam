@@ -3,6 +3,7 @@ File to fill with fun clickbait analysis!
 Love, Lucino
 """
 
+from newsapi import NewsApiClient
 import nltk
 from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
@@ -12,6 +13,7 @@ from collections import Counter
 from nltk.corpus import stopwords
 
 common_bigrams = []
+
 """
 Opens the pickled file and shuffles it up, returning a list of labeled headlines
 """
@@ -23,11 +25,30 @@ def create_labeled_data():
     return all_headlines
 
 
+def build_source(source):
+    source_headlines = []
+    news_api = NewsApiClient(api_key='063f02817dbb49528058d7372964f645')
+    x = 1
+    while x <= 4:
+        s_headlines = \
+            news_api.get_everything(sources=source, from_param='2018-11-19', to='2018-12-19',
+                                    language='en',
+                                    sort_by='relevancy', page_size=100, page=x)['articles']
+        s_titles = [article['title'] for article in s_headlines]
+        s_titles = list(filter(None.__ne__, s_titles))
+        source_headlines.extend(s_titles)
+        x += 1
+    return source_headlines
+
+"""
+Generate bigrams based on the training data, then 
+"""
+
+
 def create_feature_sets(labeled_data):
     common = get_bigrams(labeled_data)
     common_bigrams.extend(common)
     feature_sets = [(bait_features(headline), label) for (headline, label) in labeled_data]
-    print(len(feature_sets))
     train_set, test_set = feature_sets[:2700], feature_sets[2700:]
     return train_set, test_set
 
@@ -144,11 +165,13 @@ def bigrams(headline):
             return True
     return False
 
+
 # Calculates proportion of word in headline that are stopwords or function words
 def function_words(headline):
     fun_words = [w for w in [word.lower() for word in word_tokenize(headline)] if w in stopwords.words('english')]
     #return len(fun_words)/len(word_tokenize(headline))
     return True if (len(fun_words)/len(word_tokenize(headline)) == .5) else False
+
 
 def flag_words(headline):
     flags = ['this', 'will', 'believe', 'surprise']
@@ -169,12 +192,31 @@ def evaluate_classifier(classifier, test_set):
     print(nltk.classify.accuracy(classifier, test_set))
 
 
+def classify_headlines(lines, classifier):
+    features = [bait_features(line) for line in lines]
+    label_list = []
+    for feat in features:
+        label_list.append(classifier.classify(feat))
+    bait_count = label_list.count('bait')
+    return bait_count/len(label_list)
+
+
 if __name__ == '__main__':
     labeled_data = create_labeled_data()
     training_set, test_set = create_feature_sets(labeled_data)
-    classifier = train_classifier(training_set)
-    evaluate_classifier(classifier, test_set)
-    classifier.show_most_informative_features(20)
+    # classifier = train_classifier(training_set)
+    # evaluate_classifier(classifier, test_set)
+    # classifier.show_most_informative_features(20)
+
+    # opens a ready-trained classifier to save time on training and evaluating.
+    # uncomment the above lines and run the program to see a 'new' classifier's
+    # accuracy!
+    classifier = pickle.load( open('trained_classifier.p', 'rb'))
+    source = input('Welcome to the Clickbait Classifier! '
+                   'Choose a news source to classify from sources.txt.\n')
+
+    print('The headlines found from this source are about ' +
+          str(classify_headlines(build_source(source), classifier)*100) + '% clickbait!')
 
 
 

@@ -2,7 +2,7 @@ from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 
 class Headline:
-    def __init__(self, string, label):
+    def __init__(self, string, label='Unknown'):
         self.string = string
         self.label = label
         self.tokens = word_tokenize(string)
