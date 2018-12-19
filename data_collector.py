@@ -7,9 +7,17 @@ import pickle
 import random
 from newsapi import NewsApiClient
 import nltk
+import datetime
 
 bait_headlines = []
 legit_headlines = []
+
+now = datetime.datetime.now()
+now_str = now.strftime('%Y') + "-" + now.strftime('%m') + "-" + now.strftime('%d')
+monthago = now - datetime.timedelta(days=30)
+monthago_str = monthago.strftime('%Y') + "-" + monthago.strftime('%m') + "-" + monthago.strftime('%d')
+
+
 
 
 def create_labeled_data():
@@ -17,18 +25,18 @@ def create_labeled_data():
     x = 1
     while x <= 10:
         b_headlines = \
-            news_api.get_everything(sources='buzzfeed', from_param='2018-11-17', to='2018-12-15',
+            news_api.get_everything(sources='buzzfeed', from_param=monthago_str, to=now_str,
                                     language='en',
                                     sort_by='relevancy', page_size=100, page=x)['articles']
         m_headlines = \
-            news_api.get_everything(sources='mtv-news', from_param='2018-11-17', to='2018-12-15',
+            news_api.get_everything(sources='mtv-news', from_param=monthago_str, to=now_str,
                                     language='en',
                                     sort_by='relevancy', page_size=100, page=x)['articles']
         r_headlines = \
-            news_api.get_everything(sources='reuters', from_param='2018-11-17', to='2018-12-15',
+            news_api.get_everything(sources='reuters', from_param=monthago_str, to=now_str,
                                     language='en', sort_by='relevancy', page_size=100, page=x)['articles']
         a_headlines = \
-            news_api.get_everything(sources='associated-press', from_param='2018-11-17', to='2018-12-15',
+            news_api.get_everything(sources='associated-press', from_param=monthago_str, to=now_str,
                                     language='en', sort_by='relevancy', page_size=100, page=x)['articles']
         b_titles = [article['title'] for article in b_headlines]
         b_titles = list(filter(None.__ne__, b_titles))
