@@ -11,6 +11,7 @@ import pickle
 from collections import Counter
 from nltk.corpus import stopwords
 from headline import Headline
+from newscorpus import Newscorpus
 
 common_bigrams = []
 common_words = []
@@ -181,10 +182,24 @@ def evaluate_classifier(classifier, test_set):
     print(nltk.classify.accuracy(classifier, test_set))
 
 
-if __name__ == '__main__':
+def classify_headlines(headlines, classifier):
+    features = [bait_features(Headline(headline)) for headline in headlines]
+    label_list = []
+    for feat in features:
+        label_list.append(classifier.classify(feat))
+    bait_count = label_list.count('bait')
+    return bait_count/len(label_list)
 
+
+if __name__ == '__main__':
     headlines = create_headlines()
     training_set, test_set = create_feature_sets(headlines)
-    classifier = train_classifier(training_set)
-    evaluate_classifier(classifier, test_set)
-    classifier.show_most_informative_features()
+    # classifier = train_classifier(training_set)
+    # evaluate_classifier(classifier, test_set)
+    # classifier.show_most_informative_features()
+    classifier = pickle.load(open('trained_classifier.p', 'rb'))
+    print("Welcome to the Clickbait Classifier! Choose a news source to classify from sources.txt.")
+    usersource = input()
+    key = 'b7cbbf432d6944379b817084a400ee5b'
+    newssource = Newscorpus(key, usersource)
+    print("This news source is approximately " + str(classify_headlines(newssource.headlines,classifier) * 100) + "% clickbait.")
