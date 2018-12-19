@@ -67,7 +67,7 @@ def bait_features(headline):
     featureset['superlative'] = superlative(headline)
     featureset['imperative'] = imperative(headline)
     featureset['bigrams'] = bigrams(headline)
-    featureset['function_words'] = function_words(headline)
+    #featureset['function_words'] = function_words(headline)
     featureset['flag_words'] = flag_words(headline)
     featureset['rare_words'] = rare_words(headline)
     return featureset
@@ -194,44 +194,44 @@ def classify_headlines(headlines, classifier):
 if __name__ == '__main__':
     headlines = create_headlines()
     training_set, test_set = create_feature_sets(headlines)
-    # classifier = train_classifier(training_set)
-    # evaluate_classifier(classifier, test_set)
-    # classifier.show_most_informative_features()
-    classifier = pickle.load(open('trained_classifier.p', 'rb'))
+    classifier = train_classifier(training_set)
+    evaluate_classifier(classifier, test_set)
+    classifier.show_most_informative_features()
 
-    print("Welcome to the Clickbait Classifier! You can either view the percentage of clickbait headlines in a news source ")
-    print("or enter a single headline to classify it. Type 'headline' to classify a single headline or 'source' to get information ")
-    print("about a news source:", end=" ")
-    arm = input()
-
-    while (arm == 'headline'):
-        print()
-        print("Enter your headline:", end=" ")
-        hline = Headline(input())
-        fset = bait_features(hline)
-        print("Calculating...")
-        classification = classifier.classify(fset)
-        print("This article is probably", classification)
-        print()
-        print("Would you like to enter another headline? (y/n) ", end=" ")
-        inp = input()
-        if inp == 'y':
-            arm = 'headline'
-        else:
-            arm = ''
-
-    while (arm == 'source'):
-        print("Enter the name of a news source from sources.txt:", end=" ")
-        usersource = input()
-        print("Calculating...")
-        key = 'b7cbbf432d6944379b817084a400ee5b'
-        newssource = Newscorpus(key, usersource)
-        print("This news source is approximately " + str(classify_headlines(newssource.headlines, classifier) * 100) + "% clickbait.")
-        print()
-        print("Would you like to try another news source? (y/n)", end=" ")
-        inp = input()
-        if inp == 'y':
-            arm = 'source'
-        else:
-            arm = ''
-        print('\n')
+    # classifier = pickle.load(open('trained_classifier.p', 'rb'))
+    # print("Welcome to the Clickbait Classifier! You can either view the percentage of clickbait headlines in a news source ")
+    # print("or enter a single headline to classify it. Type 'headline' to classify a single headline or 'source' to get information ")
+    # print("about a news source:", end=" ")
+    # arm = input()
+    #
+    # while (arm == 'headline'):
+    #     print()
+    #     print("Enter your headline:", end=" ")
+    #     hline = Headline(input())
+    #     fset = bait_features(hline)
+    #     print("Calculating...")
+    #     classification = classifier.classify(fset)
+    #     print("This article is probably", classification)
+    #     print()
+    #     print("Would you like to enter another headline? (y/n) ", end=" ")
+    #     inp = input()
+    #     if inp == 'y':
+    #         arm = 'headline'
+    #     else:
+    #         arm = ''
+    #
+    # while (arm == 'source'):
+    #     print("Enter the name of a news source from sources.txt:", end=" ")
+    #     usersource = input()
+    #     print("Calculating...")
+    #     key = 'b7cbbf432d6944379b817084a400ee5b'
+    #     newssource = Newscorpus(key, usersource)
+    #     print("This news source is approximately " + str(classify_headlines(newssource.headlines, classifier) * 100) + "% clickbait.")
+    #     print()
+    #     print("Would you like to try another news source? (y/n)", end=" ")
+    #     inp = input()
+    #     if inp == 'y':
+    #         arm = 'source'
+    #     else:
+    #         arm = ''
+    #     print('\n')
