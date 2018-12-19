@@ -188,9 +188,3 @@ if __name__ == '__main__':
     classifier = train_classifier(training_set)
     evaluate_classifier(classifier, test_set)
     classifier.show_most_informative_features()
-
-
-    str = "Officials Say Trump Has Ordered Full Withdrawal of U.S. Troops From Syria"
-    hline = Headline(str, 'unknown')
-    fset = bait_features(hline)
-    print(classifier.classify(fset))
