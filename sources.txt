@@ -1,3 +1,5 @@
+Choose from one of the below news sources to test the classifier: (be sure to use this exact formatting!)
+
 abc-news
 abc-news-au
 al-jazeera-english

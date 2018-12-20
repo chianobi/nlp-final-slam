@@ -1,8 +1,9 @@
-import time
-import datetime
-import nltk
 from newsapi import NewsApiClient
 
+"""
+The newscorpus class creates an object that functions as a standalone corpus of headlines grabbed from a particular news source, 
+chosen by the user in the main program.
+"""
 class Newscorpus:
 	def __init__(self,key,source):
 		self.key = key

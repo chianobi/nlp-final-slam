@@ -1,8 +1,3 @@
-"""
-File to fill with fun clickbait analysis!
-Love, Lucino
-"""
-
 import nltk
 from nltk.tag import pos_tag
 from nltk.tokenize import word_tokenize
@@ -35,7 +30,9 @@ def create_feature_sets(headlines):
     return train_set, test_set
 
 
-#pulls out most frequent bigrams from the training set each time (they are almost always the same!)
+"""
+Pulls out most frequent bigrams from the training set each time (they are almost always the same!)
+"""
 def get_bigrams(headlines):
     all_bgrams = []
     training = [h.tokens_lower for h in headlines[:splitpoint] if h.label == 'bait']
@@ -73,7 +70,9 @@ def bait_features(headline):
     featureset['rare_words'] = rare_words(headline)
     return featureset
 
-# Checks for the use of first and second-person pronouns in article headline; returns true if any found.
+"""
+Checks for the use of first and second-person pronouns in article headline; returns true if any found.
+"""
 def procount(headline):
     pronouns = ["we", "you", "i", "everyone", "us", "your", "our"]
     for w in headline.tokens_lower:
@@ -82,7 +81,9 @@ def procount(headline):
     return False
 
 
-# Checks end-of-sentence punctuation count in headline; returns true if count is greater than 0.
+"""
+Checks end-of-sentence punctuation count in headline; returns true if count is greater than 0.
+"""
 def punct(headline):
     punct = [".", "!", "?"]
     found = False
@@ -92,7 +93,9 @@ def punct(headline):
     return found
 
 
-# Checks whether the headline starts with a digit; returns true if so.
+"""
+Checks whether the headline starts with a digit; returns true if so.
+"""
 def startswithnum(headline):
     tags = [w[1] for w in headline.pos_tagged]
     if tags[0] == 'CD':
@@ -100,7 +103,9 @@ def startswithnum(headline):
     return False
 
 
-# Calculates average word length within headline; returns true if the average is greater than 4.
+"""
+Calculates average word length within headline; returns true if the average is greater than 4.
+"""
 def averagewordlength(headline):
     charactercount = 0
     wordcount = 0
@@ -113,13 +118,17 @@ def averagewordlength(headline):
     return avg < 4
 
 
-# Checks for the most common POS tag in the headline; returns true if the most common tag is NN.
+"""
+Checks for the most common POS tag in the headline; returns true if the most common tag is NN.
+"""
 def mostcommontag(headline):
     counts = Counter(headline.pos_tags)
     return counts.most_common()[0][0] == "NN"
 
 
-# Checks for the use of superlative adjectives in the headline; returns true if any found.
+"""
+Checks for the use of superlative adjectives in the headline; returns true if any found.
+"""
 def superlative(headline):
     for tag in headline.pos_tags:
         if tag == 'JJS' or tag == 'RBS':
@@ -127,7 +136,9 @@ def superlative(headline):
     return False
 
 
-# Checks for the use of wh-words in the headline; returns true if any found.
+"""
+Checks for the use of wh-words in the headline; returns true if any found.
+"""
 def wh(headline):
     for tag in headline.pos_tags:
         if tag == 'WP':
@@ -135,16 +146,18 @@ def wh(headline):
     return False
 
 
-# Checks whether the first word in a headline is tagged as a bare-form verb, indicating an imperative;
-# returns true if it is.
+"""
+Checks whether the first word in a headline is tagged as a bare-form verb, indicating an imperative; returns true if it is.
+"""
 def imperative(headline):
     if headline.pos_tags[0] == 'VB':
         return True
     return False
 
-
-# Checks all bigrams in the headline, and compares them against a list of most common clickbait bigrams. Returns
-# true if any match.
+"""
+Checks all bigrams in the headline, and compares them against a list of most common clickbait bigrams. Returns
+true if any match.
+"""
 def bigrams(headline):
     bigrams = nltk.bigrams(headline.tokens_lower)
 
@@ -153,12 +166,17 @@ def bigrams(headline):
             return True
     return False
 
-# Calculates proportion of word in headline that are stopwords or function words
+"""
+Calculates proportion of word in headline that are stopwords or function words; returns true if the ratio is .5.
+"""
 def function_words(headline):
     fun_words = [w for w in headline.tokens_lower if w in stopwords.words('english')]
     #return len(fun_words)/headline.num_tokens
     return True if ((len(fun_words)/headline.num_tokens) == .5) else False
 
+"""
+Checks the tokenized headline for instances of common clickbait flagwords; returns true if any found.
+"""
 def flag_words(headline):
     flags = ['this', 'these', 'will', 'll', 'believe', 'surprise']
     found = False
@@ -167,6 +185,9 @@ def flag_words(headline):
             found = True
     return found
 
+"""
+Checks how many words in the headline are not in the common_words list; returns true if the number is greater than 17.
+"""
 def rare_words(headline):
     rare = 0
     for word in headline.tokens_lower:
@@ -196,13 +217,12 @@ def classify_headline(headline,classifier):
 
 
 if __name__ == '__main__':
-    headlines = create_headlines()
-    training_set, test_set = create_feature_sets(headlines)
-    classifier = train_classifier(training_set)
-    evaluate_classifier(classifier, test_set)
-    classifier.show_most_informative_features()
+    #headlines = create_headlines()
+    #training_set, test_set = create_feature_sets(headlines)
+    #classifier = train_classifier(training_set)
+    #evaluate_classifier(classifier, test_set)
+    #classifier.show_most_informative_features()
 
-    classifier = pickle.load(open('trained_classifier.p', 'rb'))
     print("Welcome to the Clickbait Classifier! You can either view the percentage of clickbait headlines in a news source ")
     print("or enter a single headline to classify it. Type 'headline' to classify a single headline or 'source' to get information ")
     print("about a news source:", end=" ")
@@ -215,7 +235,7 @@ if __name__ == '__main__':
     	hline = input()
     	print("Calculating...")
     	classification = classify_headline(hline,classifier)
-    	print("This article is probably", classification[0])
+    	print("This article is probably " + classification[0] + ".")
     	print()
     	print("Would you like to enter another headline? (y/n) ", end=" ")
     	inp = input()

@@ -1,6 +1,10 @@
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 
+"""
+The headline class creates objects from headlines. The class performs various types of token-level processing
+on the headline and stores these results in various attributes of the Headline object.
+"""
 class Headline:
     def __init__(self, string, label='Unknown'):
         self.string = string
