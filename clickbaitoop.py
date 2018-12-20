@@ -1,7 +1,7 @@
 """
 Instructions:
 
-Run clickbaitoop.py on your command line to use the Clickbait cCassifier. You will be prompted to choose one of two 
+Run clickbaitoop.py on your command line to use the Clickbait Classifier. You will be prompted to choose one of two 
 functionalities:
 
 1) you may use the classifier to classify a particular headline, or 
@@ -338,3 +338,18 @@ if __name__ == '__main__':
         else:
             arm = ''
             print('\n')
+    	classifier = pickle.load(open('trained_classifier.p', 'rb'))
+    	print("Enter the name of a news source from sources.txt:", end=" ")
+    	usersource = input()
+    	print("Calculating...")
+    	key = '89cf7e72dd4749c2b29e80c44da173f3'
+    	newssource = Newscorpus(key, usersource)
+    	print("This news source is approximately %.2f %% clickbait." % (classify_headlines(newssource.headlines, classifier) * 100))
+    	print()
+    	print("Would you like to try another news source? (y/n)", end=" ")
+    	inp = input()
+    	if inp == 'y':
+    		arm = 'source'
+    	else:
+    		arm = ''
+    		print('\n')
