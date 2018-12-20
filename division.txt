@@ -7,7 +7,7 @@ Wrote relevant parts of write up
 Arjuna Mahenthiran - 
 Found NEWSApi as a source for news headlines
 Contributed to feature functions of Naive Bayes slassifier
-Researched viability of non-Naive Bayes slassifiers
+Researched viability of non-Naive Bayes classifiers
 Built Neighbors classifier using SciKit Learn
 Wrote relevant parts of write up
 
@@ -19,3 +19,8 @@ Integrated SKLearn classifier into client code
 
 
 Samantha Richards -
+Created Headline class and integrated object-oriented approach into pre-existing code (so, oop parts of clickbaitoop.py)
+Contributed function_words, rare_words, and flag_words as well as fine-tuning of features
+Helped design interactive component of client code
+Adjusted data_collector.py to collect headlines going back 1 month from whatever date it is run (datetime module)
+Wrote relevant parts of write-up
