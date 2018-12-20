@@ -1,7 +1,7 @@
 """
 Instructions:
 
-Run clickbaitoop.py on your command line to use the Clickbait cCassifier. You will be prompted to choose one of two 
+Run clickbaitoop.py on your command line to use the Clickbait Classifier. You will be prompted to choose one of two 
 functionalities:
 
 1) you may use the classifier to classify a particular headline, or 
