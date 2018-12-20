@@ -12,26 +12,26 @@ Below are some sample interactions:
 Welcome to the Clickbait Classifier! You can either view the percentage of clickbait headlines in a news source 
 or enter a single headline to classify it. Type 'headline' to classify a single headline or 'source' to get information 
 about a news source:
->>>headline
+>>> headline
 Enter your headline:
 >>> You won't believe how hard these students worked on their NLP final project. 
 Calculating...
 This article is probably bait.
 Would you like to enter another headline? (y/n) 
->>>n
+>>> n
 
 ***
 
 Welcome to the Clickbait Classifier! You can either view the percentage of clickbait headlines in a news source 
 or enter a single headline to classify it. Type 'headline' to classify a single headline or 'source' to get information 
 about a news source:
->>>source
+>>> source
 Enter the name of a news source from sources.txt: 
->>>mtv-news
+>>> mtv-news
 Calculating...
 This news source is approximately 47.24 % clickbait.
 Would you like to try another news source? (y/n)
->>>n
+>>> n
 
 
 """
