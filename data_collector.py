@@ -6,7 +6,6 @@ Quick/dirty file that collects & pickles data
 import pickle
 import random
 from newsapi import NewsApiClient
-import nltk
 import datetime
 
 bait_headlines = []
