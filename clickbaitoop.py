@@ -12,6 +12,7 @@ from collections import Counter
 from nltk.corpus import stopwords
 from headline import Headline
 from newscorpus import Newscorpus
+from neighborsclassifier import *
 
 common_bigrams = []
 common_words = []
@@ -190,6 +191,9 @@ def classify_headlines(headlines, classifier):
     bait_count = label_list.count('bait')
     return bait_count/len(label_list)
 
+def classify_headline(headline,classifier):
+	return classifier.predict(create_predictable_list(headline))
+
 
 if __name__ == '__main__':
     headlines = create_headlines()
@@ -205,33 +209,33 @@ if __name__ == '__main__':
     arm = input()
     
     while (arm == 'headline'):
-         print()
-         print("Enter your headline:", end=" ")
-         hline = Headline(input())
-         fset = bait_features(hline)
-         print("Calculating...")
-         classification = classifier.classify(fset)
-         print("This article is probably", classification)
-         print()
-         print("Would you like to enter another headline? (y/n) ", end=" ")
-         inp = input()
-         if inp == 'y':
-             arm = 'headline'
-         else:
-             arm = ''
+    	classifier = pickle.load(open('trained_classifier2.p', 'rb'))
+    	print()
+    	print("Enter your headline:", end=" ")
+    	hline = input()
+    	print("Calculating...")
+    	classification = classify_headline(hline,classifier)
+    	print("This article is probably", classification[0])
+    	print()
+    	print("Would you like to enter another headline? (y/n) ", end=" ")
+    	inp = input()
+    	if inp == 'y':
+    		arm = 'headline'
+    	else:
+    		arm = ''
     
     while (arm == 'source'):
-         print("Enter the name of a news source from sources.txt:", end=" ")
-         usersource = input()
-         print("Calculating...")
-         key = '89cf7e72dd4749c2b29e80c44da173f3'
-         newssource = Newscorpus(key, usersource)
-         print("This news source is approximately " + str(classify_headlines(newssource.headlines, classifier) * 100) + "% clickbait.")
-         print()
-         print("Would you like to try another news source? (y/n)", end=" ")
-         inp = input()
-         if inp == 'y':
-             arm = 'source'
-         else:
-             arm = ''
-         print('\n')
+        print("Enter the name of a news source from sources.txt:", end=" ")
+        usersource = input()
+        print("Calculating...")
+        key = '89cf7e72dd4749c2b29e80c44da173f3'
+        newssource = Newscorpus(key, usersource)
+        print("This news source is approximately " + str(classify_headlines(newssource.headlines, classifier) * 100) + "% clickbait.")
+        print()
+        print("Would you like to try another news source? (y/n)", end=" ")
+        inp = input()
+        if inp == 'y':
+            arm = 'source'
+        else:
+            arm = ''
+        print('\n')

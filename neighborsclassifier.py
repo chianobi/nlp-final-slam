@@ -160,5 +160,6 @@ if __name__ == '__main__':
     training_y = (create_training_y(headlines))
     neighbor_classifier = KNeighborsClassifier(n_neighbors=101)
     neighbor_classifier.fit(training_x, training_y)
-    print(neighbor_classifier.score(training_x, training_y))
-    print(neighbor_classifier.predict(create_predictable_list("You can make up a headline and test it here.")))
+    pickle.dump(neighbor_classifier, open("trained_classifier2.p",'wb'))
+    #print(neighbor_classifier.score(training_x, training_y))
+    #print(neighbor_classifier.predict(create_predictable_list("You can make up a headline and test it here.")))
