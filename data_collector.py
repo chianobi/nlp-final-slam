@@ -14,10 +14,8 @@ legit_headlines = []
 
 now = datetime.datetime.now()
 now_str = now.strftime('%Y') + "-" + now.strftime('%m') + "-" + now.strftime('%d')
-monthago = now - datetime.timedelta(days=30)
+monthago = now - datetime.timedelta(days=29)
 monthago_str = monthago.strftime('%Y') + "-" + monthago.strftime('%m') + "-" + monthago.strftime('%d')
-
-
 
 
 def create_labeled_data():
@@ -26,10 +24,6 @@ def create_labeled_data():
     while x <= 10:
         b_headlines = \
             news_api.get_everything(sources='buzzfeed', from_param=monthago_str, to=now_str,
-                                    language='en',
-                                    sort_by='relevancy', page_size=100, page=x)['articles']
-        m_headlines = \
-            news_api.get_everything(sources='mtv-news', from_param=monthago_str, to=now_str,
                                     language='en',
                                     sort_by='relevancy', page_size=100, page=x)['articles']
         r_headlines = \
@@ -42,17 +36,12 @@ def create_labeled_data():
         b_titles = list(filter(None.__ne__, b_titles))
         b_titles = [(article, 'bait') for article in b_titles]
         bait_headlines.extend(b_titles)
-        m_titles = [(article['title'], 'bait') for article in m_headlines]
-        print(len(m_titles))
-        bait_headlines.extend(m_titles)
         r_titles = [(article['title'], 'not_bait') for article in r_headlines]
         legit_headlines.extend(r_titles)
         a_titles = [(article['title'], 'not_bait') for article in a_headlines]
         legit_headlines.extend(a_titles)
         x += 1
 
-    print(len(bait_headlines))
-    print(len(legit_headlines))
     all_headlines = bait_headlines + legit_headlines
     random.shuffle(all_headlines)
     pickle.dump(all_headlines, open('headlines.p', 'wb'))
