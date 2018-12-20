@@ -5,11 +5,17 @@ Wrote logic for classify_headlines and Newscorpus class
 Wrote relevant parts of write up
 
 Arjuna Mahenthiran - 
+Found NEWSApi as a source for news headlines
+Contributed to feature functions of Naive Bayes slassifier
+Researched viability of non-Naive Bayes slassifiers
+Built Neighbors classifier using SciKit Learn
+Wrote relevant parts of write up
 
 Molly Moran - 
 Built Naive Bayes classifier
-feature extraction and fine-tuning
-designed Newscorpus objects and integrated them into client code (i.e. designed user interaction wherein user can choose a news source to classify)
+Feature extraction and fine-tuning
+Designed Newscorpus objects and integrated them into client code (i.e. designed user interaction wherein user can choose a news source to classify)
+Integrated SKLearn classifier into client code
 
 
 Samantha Richards -
